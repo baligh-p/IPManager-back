@@ -6,6 +6,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -53,7 +54,6 @@ public class CustomAuthorisationFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                     filterChain.doFilter(request,response);
                 }catch (Exception exception){
-                    log.info(exception.getMessage());
                     response.setHeader("error",exception.getMessage());
                     response.setStatus(FORBIDDEN.value());
                     Map <String , String> error = new HashMap<>();
@@ -64,7 +64,12 @@ public class CustomAuthorisationFilter extends OncePerRequestFilter {
             }
             else
             {
-                filterChain.doFilter(request,response);
+                response.setHeader("error","UNAUTHORIZED");
+                response.setStatus(FORBIDDEN.value());
+                Map <String , String> error = new HashMap<>();
+                error.put("error","UNAUTHORIZED");
+                response.setContentType(APPLICATION_JSON_VALUE);
+                new ObjectMapper().writeValue(response.getOutputStream(),error);
             }
         }
     }

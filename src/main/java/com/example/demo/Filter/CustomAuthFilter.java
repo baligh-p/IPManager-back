@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
@@ -62,5 +63,15 @@ public class CustomAuthFilter extends UsernamePasswordAuthenticationFilter {
         response.setContentType(APPLICATION_JSON_VALUE);
         new ObjectMapper().writeValue(response.getOutputStream(),tokens);
     }
-
+    @Override
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
+                                              AuthenticationException failed) throws IOException, ServletException {
+        Map <String , String> error = new HashMap<>();
+        error.put("success","false");
+        error.put("error","invalid data");
+        response.setStatus(FORBIDDEN.value());
+        response.setHeader("error","invalid data");
+        response.setContentType(APPLICATION_JSON_VALUE);
+        new ObjectMapper().writeValue(response.getOutputStream(),error);
+    }
 }
