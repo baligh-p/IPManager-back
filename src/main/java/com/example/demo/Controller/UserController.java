@@ -10,23 +10,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
-import javax.management.relation.Role;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
-
-import static java.util.Arrays.stream;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -60,7 +50,7 @@ public class UserController {
     }
     @GetMapping("/user/getUserByName/{username}")
     public ResponseEntity<?> getUserByUsername(@PathVariable("username") String username){
-        AppUser user =appUserService.getUserByUsername(username);
+        AppUser user =appUserService.getUserByUsername(username.strip());
         if(user != null)
         {
             /*test it*/
@@ -78,7 +68,7 @@ public class UserController {
 
     @GetMapping("/user/getUserDetailsByUsername/{username}")
     public ResponseEntity<?> getUserDetailsByUsername(@PathVariable("username") String username){
-        UserDetails user =appUserService.loadUserByUsername(username);
+        UserDetails user =appUserService.loadUserByUsername(username.strip());
         if(user != null)
         {
             return ResponseEntity.ok().body(user);
@@ -94,7 +84,7 @@ public class UserController {
 
     @PostMapping("/saveUser")
     public ResponseEntity<?> saveUser(@RequestBody AppUser user) {
-        AppUser oldUser = appUserService.getUserByUsername(user.getUsername());
+        AppUser oldUser = appUserService.getUserByUsername(user.getUsername().strip());
         if(oldUser == null){
             return ResponseEntity.ok().body(appUserService.saveUser(user));
         }
@@ -117,12 +107,12 @@ public class UserController {
                 JWTVerifier verifier = JWT.require(algorithm).build() ;
                 DecodedJWT decodedJWT = verifier.verify(refresh_token);
                 String username = decodedJWT.getSubject();
-                AppUser user = appUserService.getUserByUsername(username);
+                AppUser user = appUserService.getUserByUsername(username.strip());
                 List<String> roles = new ArrayList<>() ;
                 roles.add(user.getRole());
                 String access_token = JWT.create()
-                        .withSubject(user.getUsername())
-                        .withExpiresAt(new Date(System.currentTimeMillis() + 60 * 1000))
+                        .withSubject(user.getUsername().strip())
+                        .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000))
                         .withIssuer(request.getRequestURL().toString())
                         .withClaim("roles", roles)
                         .sign(algorithm);

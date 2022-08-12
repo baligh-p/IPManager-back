@@ -49,7 +49,7 @@ public class CustomAuthorisationFilter extends OncePerRequestFilter {
                     stream(roles).forEach(element->{
                         authorities.add(new SimpleGrantedAuthority(element));
                     });
-                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username,null , authorities);
+                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username.strip(),null , authorities);
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                     filterChain.doFilter(request,response);
                 }catch (Exception exception){

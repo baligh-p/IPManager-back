@@ -30,7 +30,7 @@ public class AppUserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        AppUser user = userRepository.findByUsername(username);
+        AppUser user = userRepository.findByUsername(username.strip());
         if(user == null)
         {
             throw new UsernameNotFoundException("user not found");
@@ -38,13 +38,14 @@ public class AppUserService implements UserDetailsService {
         else{
             Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
             authorities.add(new SimpleGrantedAuthority(user.getRole()));
-            return new User(user.getUsername(),user.getPassword(),authorities);
+            return new User(user.getUsername().strip(),user.getPassword(),authorities);
         }
     }
     /*username already used exception*/
     public AppUser saveUser(AppUser user)
     {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setUsername(user.getName().strip());
         return userRepository.save(user);
     }
 
@@ -57,6 +58,6 @@ public class AppUserService implements UserDetailsService {
         return userRepository.findById(userId);
     }
     public AppUser getUserByUsername(String username){
-        return userRepository.findByUsername(username);
+        return userRepository.findByUsername(username.strip());
     }
 }
