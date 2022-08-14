@@ -2,7 +2,10 @@ package com.example.demo.Filter;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.example.demo.Repository.UserRepository;
+import com.example.demo.Service.AppUserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,7 +25,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
@@ -46,7 +48,7 @@ public class CustomAuthFilter extends UsernamePasswordAuthenticationFilter {
         Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
         String access_token = JWT.create()
                 .withSubject(user.getUsername().strip())
-                .withExpiresAt(new Date(System.currentTimeMillis() +  10 * 60 * 1000))
+                .withExpiresAt(new Date(System.currentTimeMillis() + 60 * 1000))
                 .withIssuer(request.getRequestURL().toString())
                 .withClaim("roles", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
                 .sign(algorithm);
@@ -60,6 +62,8 @@ public class CustomAuthFilter extends UsernamePasswordAuthenticationFilter {
         Map <String , String> tokens = new HashMap<>();
         tokens.put("access_token",access_token);
         tokens.put("refresh_token",refresh_token);
+        tokens.put("username" , user.getUsername());
+        tokens.put("success","true");
         response.setContentType(APPLICATION_JSON_VALUE);
         new ObjectMapper().writeValue(response.getOutputStream(),tokens);
     }
@@ -69,8 +73,6 @@ public class CustomAuthFilter extends UsernamePasswordAuthenticationFilter {
         Map <String , String> error = new HashMap<>();
         error.put("success","false");
         error.put("error","invalid data");
-        response.setStatus(FORBIDDEN.value());
-        response.setHeader("error","invalid data");
         response.setContentType(APPLICATION_JSON_VALUE);
         new ObjectMapper().writeValue(response.getOutputStream(),error);
     }

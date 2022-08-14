@@ -45,7 +45,11 @@ public class UserController {
         }
         else
         {
-            return ResponseEntity.ok().body(user.get());
+            Map<String , Object > response = new HashMap<>();
+            response.put("id",user.get().getId());
+            response.put("username",user.get().getUsername());
+            response.put("role",user.get().getRole());
+            return ResponseEntity.ok().body(response);
         }
     }
     @GetMapping("/user/getUserByName/{username}")
@@ -53,7 +57,11 @@ public class UserController {
         AppUser user =appUserService.getUserByUsername(username.strip());
         if(user != null)
         {
-            return ResponseEntity.ok().body(user);
+            Map<String , Object > response = new HashMap<>();
+            response.put("id",user.getId());
+            response.put("username",user.getUsername());
+            response.put("role",user.getRole());
+            return ResponseEntity.ok().body(response);
         }
         else
         {
@@ -64,22 +72,6 @@ public class UserController {
         }
     }
 
-
-    @GetMapping("/user/getUserDetailsByUsername/{username}")
-    public ResponseEntity<?> getUserDetailsByUsername(@PathVariable("username") String username){
-        UserDetails user =appUserService.loadUserByUsername(username.strip());
-        if(user != null)
-        {
-            return ResponseEntity.ok().body(user);
-        }
-        else
-        {
-            Map<String,String> map = new HashMap<>();
-            map.put("success","false");
-            map.put("error" ,"user not found");
-            return ResponseEntity.ok().body(map);
-        }
-    }
 
     @PostMapping("/saveUser")
     public ResponseEntity<?> saveUser(@RequestBody AppUser user) {
@@ -111,7 +103,7 @@ public class UserController {
                 roles.add(user.getRole());
                 String access_token = JWT.create()
                         .withSubject(user.getUsername().strip())
-                        .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000))
+                        .withExpiresAt(new Date(System.currentTimeMillis() + 60 * 1000))
                         .withIssuer(request.getRequestURL().toString())
                         .withClaim("roles", roles)
                         .sign(algorithm);
@@ -122,18 +114,20 @@ public class UserController {
                 response.setContentType(APPLICATION_JSON_VALUE);
                 new ObjectMapper().writeValue(response.getOutputStream(),tokens);
             }catch (Exception exception){
-                log.info(exception.getMessage());
-                response.setHeader("error",exception.getMessage());
-                response.setStatus(FORBIDDEN.value());
                 Map <String , String> error = new HashMap<>();
                 error.put("error",exception.getMessage());
+                error.put("type","token");
                 response.setContentType(APPLICATION_JSON_VALUE);
                 new ObjectMapper().writeValue(response.getOutputStream(),error);
             }
         }
         else
         {
-            throw new RuntimeException("refresh token is missing");
+            Map <String , String> error = new HashMap<>();
+            error.put("error","refresh token missing");
+            error.put("type","token");
+            response.setContentType(APPLICATION_JSON_VALUE);
+            new ObjectMapper().writeValue(response.getOutputStream(),error);
         }
     }
 
