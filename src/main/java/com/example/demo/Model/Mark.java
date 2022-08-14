@@ -1,6 +1,5 @@
 package com.example.demo.Model;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,19 +10,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
-
-@Entity @Data @NoArgsConstructor @AllArgsConstructor
-public class AppUser {
+@Entity @Data @AllArgsConstructor @NoArgsConstructor
+public class Mark {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id ;
+    private long idMark;
     @Column(unique = true)
-    private String username ;
-    private String password ;
-    private String name;
-    private String role ;
-    @OneToMany(targetEntity = History.class , mappedBy = "user")
-    private Collection<History> historys = new ArrayList<>() ;
+    private String markName;
+
+    @OneToMany(targetEntity = IPAddress.class , mappedBy = "mark")
+    private Collection<IPAddress> ipAddress = new ArrayList<>();
+
     @CreationTimestamp
     private Date createdAt ;
 }

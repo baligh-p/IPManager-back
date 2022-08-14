@@ -21,7 +21,7 @@ public class DemoApplication {
 	CommandLineRunner run(AppUserService appUserService)
 	{
 		return args-> {
-			appUserService.saveUser(new AppUser(1 , "Baligh09" , "21912883Beligh" , "Baligh Zoghlami",null,"ROLE_ADMIN"));
+			appUserService.saveUser(new AppUser(1 , "Baligh09" , "21912883Beligh" , "Baligh Zoghlami","ROLE_ADMIN",null,null));
 		};
 	}
 	@Bean

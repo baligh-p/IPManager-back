@@ -21,6 +21,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.POST;
+
 
 @Configuration @EnableWebSecurity @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -40,8 +43,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable() ;
         http.cors().and();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
         http.authorizeRequests().antMatchers("/api/v1/login/**","/api/v1/tkn/refresh/**").permitAll() ;
-        http.authorizeRequests().antMatchers("/api/v1/saveUser/**","/api/v1/user/**").hasAnyAuthority("ROLE_ADMIN") ;
+        http.authorizeRequests().antMatchers(GET,"/api/v1/type/**").permitAll();
+        http.authorizeRequests().antMatchers(GET,"/api/v1/mark/**").permitAll();
+
+        http.authorizeRequests().antMatchers("/api/v1/saveUser/**","/api/v1/user/**","/api/v1/type/**").hasAnyAuthority("ROLE_ADMIN") ;
+        http.authorizeRequests().antMatchers(POST,"/api/v1/type/**").hasAnyAuthority("ROLE_ADMIN");
+        http.authorizeRequests().antMatchers(POST,"/api/v1/mark/**").hasAnyAuthority("ROLE_ADMIN");
+
         http.authorizeRequests().anyRequest().authenticated();
         http.addFilter(customAuthFilter);
         http.addFilterBefore(new CustomAuthorisationFilter(), UsernamePasswordAuthenticationFilter.class);
