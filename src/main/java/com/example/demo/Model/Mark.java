@@ -6,8 +6,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 
 @Entity @Data @AllArgsConstructor @NoArgsConstructor
@@ -17,9 +15,6 @@ public class Mark {
     private long idMark;
     @Column(unique = true)
     private String markName;
-
-    @OneToMany(targetEntity = IPAddress.class , mappedBy = "mark")
-    private Collection<IPAddress> ipAddress = new ArrayList<>();
 
     @CreationTimestamp
     private Date createdAt ;

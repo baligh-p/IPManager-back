@@ -23,9 +23,6 @@ public class Type {
             inverseJoinColumns = @JoinColumn( name = "idMark" ))
     private Collection<Mark> marks = new ArrayList<>();
 
-    @OneToMany(targetEntity = IPAddress.class , mappedBy = "type")
-    private Collection<IPAddress> ipAddress = new ArrayList<>();
-
 
     @CreationTimestamp
     private Date createdAt ;

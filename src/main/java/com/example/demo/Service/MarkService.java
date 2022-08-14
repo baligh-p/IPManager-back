@@ -4,13 +4,11 @@ import com.example.demo.Model.Mark;
 import com.example.demo.Model.Type;
 import com.example.demo.Repository.MarkRepository;
 import com.example.demo.Repository.TypeRepository;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import javax.transaction.Transactional;
 import java.util.*;
 
@@ -33,12 +31,22 @@ public class MarkService {
             Mark mark = getMarkByName(markName);
             if(mark != null)
             {
-                value.getMarks().add(mark);
-                response.put("success" , "true");
+                int len = value.getMarks().stream().filter((element)->element
+                        .getMarkName().toUpperCase().equals(markName.toUpperCase())).toArray().length;
+                if(len == 0)
+                {
+                    value.getMarks().add(mark);
+                    response.put("success" , "true");
+                }
+                else
+                {
+                    response.put("success" , "true");
+                    response.put("message", "exist");
+                }
             }
             else
             {
-                Mark newMark = new Mark(0 , markName , null  ,null);
+                Mark newMark = new Mark(0 , markName   ,null);
                 value.getMarks().add(newMark);
                 markRepository.save(newMark);
                 response.put("success" , "true");

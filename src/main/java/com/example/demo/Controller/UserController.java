@@ -53,7 +53,6 @@ public class UserController {
         AppUser user =appUserService.getUserByUsername(username.strip());
         if(user != null)
         {
-            /*test it*/
             return ResponseEntity.ok().body(user);
         }
         else
