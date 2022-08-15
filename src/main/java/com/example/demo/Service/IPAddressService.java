@@ -24,9 +24,6 @@ public class IPAddressService {
     private final IPAddressRepository ipAddressRepository;
     private final TypeService typeService;
     private final MarkService markService;
-    public List<IPAddress> getIPs(){
-        return ipAddressRepository.findAll();
-    }
 
     public Optional<IPAddress> getIPById(long id){
         return ipAddressRepository.findById(id);
@@ -34,6 +31,10 @@ public class IPAddressService {
 
     public IPAddress getIPByAddress(String name){
         return ipAddressRepository.findByAddress(name);
+    }
+
+    public List<IPAddress> getIPByDirection(String direction){
+        return ipAddressRepository.findByDirection(direction);
     }
 
 

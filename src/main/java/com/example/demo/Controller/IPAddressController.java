@@ -29,14 +29,9 @@ public class IPAddressController {
     private final MarkService markService;
     private final TypeService typeService;
 
-    @GetMapping("/getIPs")
-    public ResponseEntity<List<IPAddress>> getIPs() {
-        return ResponseEntity.ok().body(ipAddressService.getIPs());
-    }
-
-    @GetMapping("/getIPById/{id}")
-    public ResponseEntity<Optional<IPAddress>> getIPById(@PathVariable long id) {
-        return ResponseEntity.ok().body(ipAddressService.getIPById(id));
+    @GetMapping("/getIPs/{direction}")
+    public ResponseEntity<List<IPAddress>> getIPsByDirection(@PathVariable("direction") String direction) {
+        return ResponseEntity.ok().body(ipAddressService.getIPByDirection(direction));
     }
 
     @GetMapping("/getIPByAddress/{address}")
