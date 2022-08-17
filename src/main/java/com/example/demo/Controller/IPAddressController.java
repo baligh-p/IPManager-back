@@ -43,8 +43,16 @@ public class IPAddressController {
      public ResponseEntity<Map<String , Object>> addIP(@RequestBody IpBody ip){
         Optional<Mark> mark =markService.getMarkById(ip.getIdMark());
         Optional<Type> type =typeService.getTypeById(ip.getIdType());
-        IPAddress newIp = new IPAddress(0 , ip.getAddress(),
-                ip.getDirection(),ip.getBureau(),ip.getNoms(),type.get(),mark.get(),new ArrayList<>(),null);
+        IPAddress newIp;
+        if(!mark.isEmpty()){
+            newIp = new IPAddress(0 , ip.getAddress(),
+                    ip.getDirection(),ip.getBureau(),ip.getNoms(),type.get(),mark.get(),new ArrayList<>(),null);
+        }
+        else
+        {
+            newIp = new IPAddress(0 , ip.getAddress(),
+                    ip.getDirection(),ip.getBureau(),ip.getNoms(),type.get(),null,new ArrayList<>(),null);
+        }
         return ResponseEntity.ok().body(ipAddressService.addIp(newIp));
     }
 

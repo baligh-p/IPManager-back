@@ -56,6 +56,7 @@ public class IPAddressService {
 
 
     public Map<String , Object> updateIp(UpdateIpBody ip){
+        //will generate mark null error
         Map <String  , Object >  response  = new HashMap<>();
         Optional<IPAddress> oldIp = getIPById(ip.getIdAddress());
         oldIp.ifPresentOrElse(value->{

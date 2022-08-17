@@ -115,8 +115,8 @@ public class UserController {
                 new ObjectMapper().writeValue(response.getOutputStream(),tokens);
             }catch (Exception exception){
                 Map <String , String> error = new HashMap<>();
-                error.put("error",exception.getMessage());
                 error.put("type","token");
+                error.put("error",exception.getMessage());
                 response.setContentType(APPLICATION_JSON_VALUE);
                 new ObjectMapper().writeValue(response.getOutputStream(),error);
             }

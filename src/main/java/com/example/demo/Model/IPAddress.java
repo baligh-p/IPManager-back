@@ -23,7 +23,7 @@ public class IPAddress {
 
     @ManyToOne  @JoinColumn(name = "idType", nullable = false)
     private Type type ;
-    @ManyToOne  @JoinColumn(name = "idMark", nullable = false)
+    @ManyToOne  @JoinColumn(name = "idMark")
     private Mark mark ;
 
     @OneToMany(targetEntity = History.class , mappedBy = "ipAddress")
