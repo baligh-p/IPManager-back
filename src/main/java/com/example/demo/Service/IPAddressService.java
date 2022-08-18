@@ -60,32 +60,21 @@ public class IPAddressService {
         Map <String  , Object >  response  = new HashMap<>();
         Optional<IPAddress> oldIp = getIPById(ip.getIdAddress());
         oldIp.ifPresentOrElse(value->{
-            if (getIPByAddress(ip.getAddress())==null) {
-                if(ip.getAddress() != null)
-                {
-                    value.setAddress(ip.getAddress());
-                }
-                if(ip.getBureau() != null) value.setBureau(ip.getBureau());
-                if(ip.getNoms() != null) value.setNoms(ip.getNoms());
-                if(ip.getDirection() != null) value.setDirection(ip.getDirection());
-                if(ip.getIdType()!=0)
-                {
+                    if(ip.getBureau() != null) value.setBureau(ip.getBureau());
+                    if(ip.getNoms() != null) value.setNoms(ip.getNoms());
                     Optional<Type> type = typeService.getTypeById(ip.getIdType());
                     value.setType(type.get());
-                }
-                if(ip.getIdMark()!=0)
-                {
                     Optional<Mark> mark = markService.getMarkById(ip.getIdMark());
-                    value.setMark(mark.get());
-                }
-                response.put("success" , true);
-                response.put("data",oldIp);
-            }
-            else
-            {
-                response.put("success" , false);
-                response.put("error_message","address used");
-            }
+                    if(!mark.isEmpty())
+                    {
+                        value.setMark(mark.get());
+                    }
+                    else
+                    {
+                        value.setMark(null);
+                    }
+                    response.put("success" , true);
+                    response.put("data",oldIp);
         },()->{
             response.put("success" , false);
             response.put("error_message" , "not found");

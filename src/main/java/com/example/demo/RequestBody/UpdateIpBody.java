@@ -3,6 +3,10 @@ package com.example.demo.RequestBody;
 import lombok.Data;
 
 @Data
-public class UpdateIpBody extends IpBody{
+public class UpdateIpBody {
     private long idAddress;
+    private String bureau ;
+    private String noms ;
+    private long idType ;
+    private long idMark ;
 }
