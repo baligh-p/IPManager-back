@@ -21,8 +21,9 @@ public class History {
     @ManyToOne @JoinColumn(name = "id", nullable = false)
     private AppUser user ;
     private String typeOperation ;
-    @ManyToOne @JoinColumn(name = "idAddress" , nullable = false)
-    private IPAddress ipAddress ;
+    private String address ;
+    private String bureau ;
+    private String direction ;
     @CreationTimestamp
     private Date createdAt ;
 }

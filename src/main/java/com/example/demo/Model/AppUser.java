@@ -22,8 +22,6 @@ public class AppUser {
     private String password ;
     private String name;
     private String role ;
-    @OneToMany(targetEntity = History.class , mappedBy = "user")
-    private Collection<History> historys = new ArrayList<>() ;
     @CreationTimestamp
     private Date createdAt ;
 }

@@ -26,8 +26,6 @@ public class IPAddress {
     @ManyToOne  @JoinColumn(name = "idMark")
     private Mark mark ;
 
-    @OneToMany(targetEntity = History.class , mappedBy = "ipAddress")
-    private Collection<History> historys = new ArrayList<>();
     @CreationTimestamp
     private Date createdAt ;
 }

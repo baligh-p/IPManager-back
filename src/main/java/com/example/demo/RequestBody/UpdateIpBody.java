@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class UpdateIpBody {
+    private long idUser ;
     private long idAddress;
     private String bureau ;
     private String noms ;

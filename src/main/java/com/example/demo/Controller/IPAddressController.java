@@ -1,6 +1,7 @@
 package com.example.demo.Controller;
 
 
+import com.example.demo.Model.History;
 import com.example.demo.Model.IPAddress;
 import com.example.demo.Model.Mark;
 import com.example.demo.Model.Type;
@@ -39,21 +40,21 @@ public class IPAddressController {
         return ResponseEntity.ok().body(ipAddressService.getIPByAddress(address));
     }
 
-    @PostMapping("/addIP")
-     public ResponseEntity<Map<String , Object>> addIP(@RequestBody IpBody ip){
+    @PostMapping("/addIP/{idUser}")
+     public ResponseEntity<Map<String , Object>> addIP(@PathVariable("idUser") long idUser , @RequestBody IpBody ip){
         Optional<Mark> mark =markService.getMarkById(ip.getIdMark());
         Optional<Type> type =typeService.getTypeById(ip.getIdType());
         IPAddress newIp;
         if(!mark.isEmpty()){
             newIp = new IPAddress(0 , ip.getAddress(),
-                    ip.getDirection(),ip.getBureau(),ip.getNoms(),type.get(),mark.get(),new ArrayList<>(),null);
+                    ip.getDirection(),ip.getBureau(),ip.getNoms(),type.get(),mark.get(),null);
         }
         else
         {
             newIp = new IPAddress(0 , ip.getAddress(),
-                    ip.getDirection(),ip.getBureau(),ip.getNoms(),type.get(),null,new ArrayList<>(),null);
+                    ip.getDirection(),ip.getBureau(),ip.getNoms(),type.get(),null,null);
         }
-        return ResponseEntity.ok().body(ipAddressService.addIp(newIp));
+        return ResponseEntity.ok().body(ipAddressService.addIp(newIp,idUser));
     }
 
     @PutMapping("/updateIP")
@@ -62,10 +63,16 @@ public class IPAddressController {
     }
 
 
-    @DeleteMapping("/deleteIP/{id}")
-    public ResponseEntity<Map<String , Boolean>> deleteIp(@PathVariable long id)
+    @DeleteMapping("/deleteIP/{idUser}/{id}")
+    public ResponseEntity<Map<String , Boolean>> deleteIp(@PathVariable("idUser") long idUser ,@PathVariable("id") long id )
     {
-        return ResponseEntity.ok().body(ipAddressService.deleteIp(id));
+        return ResponseEntity.ok().body(ipAddressService.deleteIp(id,idUser));
+    }
+
+
+    @GetMapping("/getHistorys")
+    public ResponseEntity<List<History>> getHistorys(){
+        return ResponseEntity.ok().body(ipAddressService.getHistorys());
     }
 }
 

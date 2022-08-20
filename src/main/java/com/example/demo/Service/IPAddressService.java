@@ -1,12 +1,13 @@
 package com.example.demo.Service;
 
-import com.example.demo.Model.IPAddress;
-import com.example.demo.Model.Mark;
-import com.example.demo.Model.Type;
+import com.example.demo.Model.*;
+import com.example.demo.Repository.HistoryRepository;
 import com.example.demo.Repository.IPAddressRepository;
+import com.example.demo.Repository.UserRepository;
 import com.example.demo.RequestBody.UpdateIpBody;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -24,6 +25,10 @@ public class IPAddressService {
     private final IPAddressRepository ipAddressRepository;
     private final TypeService typeService;
     private final MarkService markService;
+    private final UserRepository userRepository;
+    private final HistoryRepository historyRepository;
+
+
 
     public Optional<IPAddress> getIPById(long id){
         return ipAddressRepository.findById(id);
@@ -40,12 +45,14 @@ public class IPAddressService {
 
 
     /*add to history*/
-    public Map<String , Object> addIp(IPAddress ip){
+    public Map<String , Object> addIp(IPAddress ip , long idUser){
         Map<String , Object> response = new HashMap<>();
        if(getIPByAddress(ip.getAddress())==null)
        {
+           IPAddress  address = ipAddressRepository.save(ip);
            response.put("exist",false);
-           response.put("data" , ipAddressRepository.save(ip));
+           response.put("data" , address);
+           addToHistory(address.getIdAddress(),idUser,"add");
        }
        else
        {
@@ -75,6 +82,7 @@ public class IPAddressService {
                     }
                     response.put("success" , true);
                     response.put("data",oldIp);
+                    addToHistory(ip.getIdAddress(),ip.getIdUser(),"update");
         },()->{
             response.put("success" , false);
             response.put("error_message" , "not found");
@@ -83,15 +91,28 @@ public class IPAddressService {
     }
 
 
-    public Map<String , Boolean> deleteIp(long id){
+    public Map<String , Boolean> deleteIp(long id , long idUser){
         Map<String , Boolean> response = new HashMap<>();
         if(getIPById(id).isPresent())
         {
+            addToHistory(id,idUser,"delete");
             ipAddressRepository.deleteById(id);
             response.put("success",true);
         }
         else response.put("success",false);
         return response;
+    }
+
+
+    public void addToHistory(long idAddress, long idUser ,String operation ){
+        Optional<AppUser> appUser = userRepository.findById(idUser);
+        Optional<IPAddress> ip = ipAddressRepository.findById(idAddress);
+        historyRepository.save(new History(0,appUser.get(),operation,
+                    ip.get().getAddress(),ip.get().getBureau(),ip.get().getDirection(), null));
+    }
+
+    public List<History> getHistorys(){
+        return historyRepository.findAll(Sort.by(Sort.Direction.DESC,"createdAt"));
     }
 
 }
