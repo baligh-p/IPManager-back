@@ -7,6 +7,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.demo.Model.AppUser;
 import com.example.demo.Service.AppUserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -73,6 +74,11 @@ public class UserController {
     }
 
 
+    @PutMapping("/user/changePassword")
+    public ResponseEntity<Map<String , Object>> changePassword(@RequestBody ChangePwdBody data){
+        return ResponseEntity.ok().body(appUserService.updatePassword(data.getUserId(), data.getOldPassword(), data.getNewPassword()));
+    }
+
     @PostMapping("/saveUser")
     public ResponseEntity<?> saveUser(@RequestBody AppUser user) {
         AppUser oldUser = appUserService.getUserByUsername(user.getUsername().strip());
@@ -131,4 +137,12 @@ public class UserController {
         }
     }
 
+}
+
+@Data
+class ChangePwdBody
+{
+    private long userId ;
+    private String newPassword;
+    private String oldPassword;
 }
