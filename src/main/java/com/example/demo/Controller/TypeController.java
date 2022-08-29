@@ -36,4 +36,9 @@ public class TypeController {
     public ResponseEntity<Optional<Type>> getTypeById(@PathVariable("id") long id){
          return ResponseEntity.ok().body(typeService.getTypeById(id));
     }
+    @GetMapping("/getStat")
+    public ResponseEntity<Map<String , Object>> getStat(){
+
+        return ResponseEntity.ok().body(typeService.getStat());
+    }
 }

@@ -6,8 +6,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 
 @Entity @Data @AllArgsConstructor @NoArgsConstructor
@@ -21,7 +19,7 @@ public class IPAddress {
     private String Bureau;
     private String noms ;
 
-    @ManyToOne  @JoinColumn(name = "idType", nullable = false)
+    @ManyToOne  @JoinColumn(name = "idType")
     private Type type ;
     @ManyToOne  @JoinColumn(name = "idMark")
     private Mark mark ;
