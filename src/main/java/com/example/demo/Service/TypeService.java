@@ -41,20 +41,43 @@ public class TypeService {
     public Map<String , Object> getStat(){
         Map<String , Object> response =new HashMap<>();
         List<Type> types = typeRepository.findAll();
-        List<IPAddress> ips =ipAddressRepository.findAll().stream().filter((element)->element.getMark()!=null&&element.getType()!=null).collect(Collectors.toList());
+        List<IPAddress> ips =ipAddressRepository.findAll().stream().filter((element)->element.getType()!=null).collect(Collectors.toList());
+        //.stream().filter((element)->element.getMark()!=null&&element.getType()!=null).collect(Collectors.toList());
         types.forEach((type)->{
             List<Map<String , Integer>> lst = new ArrayList<>();
             ips.forEach((ip)->{
                 if(ip.getType().getTypeName()==type.getTypeName())
                 {
-                    List<Map<String , Integer>>  result = lst.stream().filter((element)->element.containsKey(ip.getMark().getMarkName())).collect(Collectors.toList());
-                    if(result.size()!=0){
-                       result.get(0).put(ip.getMark().getMarkName(),result.get(0).get(ip.getMark().getMarkName())+1);
+                    List<Map<String , Integer>>  result;
+                    if(ip.getMark()!=null)
+                    {
+                        result = lst.stream().filter((element)->element.containsKey(ip.getMark().getMarkName())).collect(Collectors.toList());
                     }else
                     {
-                        Map<String , Integer> newMap = new HashMap<>();
-                        newMap.put(ip.getMark().getMarkName(),1);
-                        lst.add(newMap);
+                        result = lst.stream().filter((element)->element.containsKey("null")).collect(Collectors.toList());
+                    }
+                    if(result.size()!=0){
+                        if(ip.getMark()!=null)
+                        {
+                            result.get(0).put(ip.getMark().getMarkName(),result.get(0).get(ip.getMark().getMarkName())+1);
+                        }
+                        else
+                        {
+                            result.get(0).put("null",result.get(0).get("null")+1);
+                        }
+                    }else
+                    {
+                        if(ip.getMark()==null)
+                        {
+                            Map<String , Integer> newMap = new HashMap<>();
+                            newMap.put("null",1);
+                            lst.add(newMap);
+                        }else
+                        {
+                            Map<String , Integer> newMap = new HashMap<>();
+                            newMap.put(ip.getMark().getMarkName(),1);
+                            lst.add(newMap);
+                        }
                     }
                 }
             });
