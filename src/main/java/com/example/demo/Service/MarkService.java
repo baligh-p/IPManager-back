@@ -8,9 +8,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.transaction.Transactional;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -65,4 +68,39 @@ public class MarkService {
         return markRepository.findById(id);
     }
 
+    public Map<String , Object> deleteMark(long idType ,long idMark ){
+        Map<String , Object> response = new HashMap<>();
+        Optional<Type> type = typeRepository.findById(idType);
+        type.ifPresentOrElse((element)->{
+            if(element.getMarks()==null)
+            {
+                response.put("success",false);
+                response.put("error_message","mark not found");
+            }
+            else
+            {
+                element.setMarks(element.getMarks().stream().filter((mark)->mark.getIdMark()!=idMark).collect(Collectors.toList()));
+                response.put("success",true);
+            }
+        },()->{
+            response.put("success",false);
+            response.put("error_message","type not found");
+        });
+        return response;
+    }
+    
+    public Map<String , Object> updateMark(long idMark , String newName){
+        Map<String , Object> response = new HashMap<>() ;
+        Optional<Mark> mark = markRepository.findById(idMark);
+        mark.ifPresentOrElse((element)->{
+            response.put("success",true);
+            element.setMarkName(newName);
+        },()->{
+            response.put("success",false);
+        });
+
+        return response;
+    }
+    
+    
 }

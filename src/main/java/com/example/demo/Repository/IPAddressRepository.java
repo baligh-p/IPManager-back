@@ -8,4 +8,6 @@ import java.util.List;
 public interface IPAddressRepository extends JpaRepository<IPAddress , Long> {
     IPAddress findByAddress(String name);
     List<IPAddress> findByDirection(String name);
+
+    void deleteByDirection(String directionName);
 }

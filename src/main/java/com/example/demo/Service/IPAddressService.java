@@ -102,7 +102,9 @@ public class IPAddressService {
         else response.put("success",false);
         return response;
     }
-
+    public void deleteIpByDirectionName(String directionName){
+        ipAddressRepository.deleteByDirection(directionName);
+    }
 
     public void addToHistory(long idAddress, long idUser ,String operation ){
         Optional<AppUser> appUser = userRepository.findById(idUser);

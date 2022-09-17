@@ -28,4 +28,12 @@ public class DirectionController {
     public ResponseEntity<Map<String , Object>> getDirections(@RequestBody Direction dir){
         return ResponseEntity.ok().body(directionService.addDirection(dir));
     }
+    @PutMapping("/updateName/{idDirection}/{name}")
+    public ResponseEntity<Map<String , Object>>updateDirectionName(@PathVariable("name") String name,@PathVariable("idDirection") long idDirection){
+        return ResponseEntity.ok().body(directionService.updateDirectionName(idDirection,name));
+    }
+    @DeleteMapping("/deleteDirection/{directionId}")
+    public ResponseEntity<Map<String , Object>> deleteDirectionAndHerIps(@PathVariable("directionId") long directionId){
+        return ResponseEntity.ok().body(directionService.deleteDirection(directionId));
+    }
 }
