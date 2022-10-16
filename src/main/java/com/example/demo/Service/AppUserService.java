@@ -63,8 +63,21 @@ public class AppUserService implements UserDetailsService {
     public Map<String , Object > updatePassword(long userId , String oldPwd,String newPwd ){
         Map<String , Object > response = new HashMap<>();
         Optional<AppUser> appUser = userRepository.findById(userId);
-        log.info(appUser.isPresent()+"");
         if(appUser.isPresent()&&passwordEncoder.matches(oldPwd , appUser.get().getPassword()))
+        {
+            appUser.get().setPassword(passwordEncoder.encode(newPwd));
+            response.put("success",true);
+        }
+        else
+        {
+            response.put("success",false);
+        }
+        return response;
+    }
+    public Map<String , Object> updatePasswordWithoutVerif(long userId ,String newPwd ){
+        Map<String , Object > response = new HashMap<>();
+        Optional<AppUser> appUser = userRepository.findById(userId);
+        if(appUser.isPresent())
         {
             appUser.get().setPassword(passwordEncoder.encode(newPwd));
             response.put("success",true);

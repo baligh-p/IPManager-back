@@ -78,6 +78,10 @@ public class UserController {
     public ResponseEntity<Map<String , Object>> changePassword(@RequestBody ChangePwdBody data){
         return ResponseEntity.ok().body(appUserService.updatePassword(data.getUserId(), data.getOldPassword(), data.getNewPassword()));
     }
+    @PutMapping("/user/adminChangePassword")
+    public ResponseEntity<Map<String , Object>> adminChangePassword(@RequestBody ChangePwdBody data){
+        return ResponseEntity.ok().body(appUserService.updatePasswordWithoutVerif(data.getUserId(), data.getNewPassword()));
+    }
 
     @PostMapping("/saveUser")
     public ResponseEntity<?> saveUser(@RequestBody AppUser user) {
